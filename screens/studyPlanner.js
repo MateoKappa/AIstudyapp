@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import {
   View,
@@ -11,21 +11,16 @@ import Slider from "react-native-slider";
 import { FontAwesome } from "@expo/vector-icons";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { Switch, Button } from "react-native-paper";
-
-const Greeting = () => {
+import AsyncStorage from "@react-native-async-storage/async-storage";
+const DailyPlannerScreen = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isSwitchOn, setIsSwitchOn] = useState(false);
+  const [pickedDate, setPickedDate] = useState("");
   const [settingContainer, setSettingContainer] = useState(false);
   const [keepTime, setKeepTime] = useState(0);
   let minute = keepTime % 60;
   let hour = keepTime / 60;
-  const [time, SetTime] = useState({
-    hours: 0,
-    hour: 0,
-    divider: ":",
-    mins: 0,
-    min: 0,
-  });
+  const [time, SetTime] = useState(["00:00"]);
 
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
   const styles = getStyles();
@@ -50,53 +45,10 @@ const Greeting = () => {
   const handleConfirm = (date) => {
     console.log(
       "A date has been picked: ",
-      SetTime({
-        hours: date.toString().slice(16, 17),
-        hour: date.toString().slice(17, 18),
-        divider: ":",
-        mins: date.toString().slice(19, 20),
-        min: date.toString().slice(20, 21),
-      })
+      SetTime([date.toString().slice(16, 21)])
     );
     hideDatePicker();
-    console.log(time);
   };
-
-  //Slider
-
-  //   class SliderExample extends React.Component {
-  //     state = {
-  //       value: 0,
-  //     };
-
-  //     render() {
-  //       let minute = this.state.value % 60;
-  //       let hour = this.state.value / 60;
-  //       return (
-  //         <View style={{ marginLeft: 45, marginRight: 45 }}>
-  //           <Slider
-  //             step={15}
-  //             minimumValue={0}
-  //             maximumValue={1440}
-  //             value={this.state.value}
-  //             onValueChange={(value) => this.setState({ value })}
-  //           />
-  //           <Text
-  //             style={{
-  //               alignSelf: "center",
-  //               fontWeight: 600,
-  //               fontSize: 18,
-  //               margin: 10,
-  //               marginBottom: 0,
-  //             }}
-  //           >
-  //             Time: {hour >= 1 ? <Text>{parseInt(hour)} hrs</Text> : null}{" "}
-  //             {minute} min
-  //           </Text>
-  //         </View>
-  //       );
-  //     }
-  //   }
 
   //Day Component
   const DailyPlanner = ({ day, index }) => {
@@ -108,7 +60,9 @@ const Greeting = () => {
           },
           styles.dailyPlannerContainer,
         ]}
-        onPress={() => setSettingContainer(true)}
+        onPress={() => {
+          setSettingContainer(true), setPickedDate(day[0]);
+        }}
       >
         <Text style={styles.dayText}>{day[0]}</Text>
         <Text style={styles.daySmallText}>Not Scheduled</Text>
@@ -122,14 +76,39 @@ const Greeting = () => {
     );
   };
 
-  //DailyPlannerSettings Component
+  //save day settings
+  const dailyTimeSaver = (day) => {
+    setSettingContainer(false);
+    AsyncStorage.setItem(
+      day.toString(),
+      JSON.stringify({ time: time.toString(), min: keepTime.toString() })
+    );
+  };
+
+  // local storage getDailyStorageData
+  useEffect(() => {
+    (async () => {
+      async function getDailyStorageData() {
+        try {
+          const value = await AsyncStorage.getItem(pickedDate);
+          let objectValue = JSON.parse(value);
+          console.log(objectValue);
+        } catch (error) {
+          console.log(error);
+        }
+      }
+      getDailyStorageData();
+    })();
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>Study Planner</Text>
+      <Text style={{ marginTop: 50, alignSelf: "center", fontSize: 35 }}>
+        Study Planner
+      </Text>
       <View style={styles.dailycontainer}>
         {dayColor.map((day, key) => (
-          <DailyPlanner day={day} index={key} />
+          <DailyPlanner day={day} index={key} key={key} />
         ))}
       </View>
       {/* Day Settings */}
@@ -148,7 +127,7 @@ const Greeting = () => {
               borderRadius: "50%",
             }}
           >
-            <Text style={{ fontSize: 20, fontWeight: 500 }}>MONDAY</Text>
+            <Text style={{ fontSize: 20, fontWeight: 500 }}>{pickedDate}</Text>
           </Pressable>
           <View style={{ marginLeft: 45, marginRight: 45 }}>
             <Slider
@@ -205,10 +184,10 @@ const Greeting = () => {
             />
             <Pressable onPress={showDatePicker} style={styles.timer}>
               <View style={styles.time}>
-                <Text style={styles.digits}>{time.hours}</Text>
+                <Text style={styles.digits}>{time[0][0]}</Text>
               </View>
               <View style={styles.time}>
-                <Text style={styles.digits}>{time.hour}</Text>
+                <Text style={styles.digits}>{time[0][1]}</Text>
               </View>
               <Text
                 style={[
@@ -220,13 +199,14 @@ const Greeting = () => {
                   },
                 ]}
               >
-                {time.divider}
+                {time[0][2]}
               </Text>
+              {console.log(time)}
               <View style={styles.time}>
-                <Text style={styles.digits}>{time.mins}</Text>
+                <Text style={styles.digits}>{time[0][3]}</Text>
               </View>
               <View style={styles.time}>
-                <Text style={styles.digits}>{time.min}</Text>
+                <Text style={styles.digits}>{time[0][4]}</Text>
               </View>
             </Pressable>
           </View>
@@ -241,7 +221,9 @@ const Greeting = () => {
             }}
             labelStyle={{ color: "black" }}
             mode="contained"
-            onPress={() => console.log("Pressed")}
+            onPress={() => {
+              setSettingContainer(false), dailyTimeSaver(pickedDate);
+            }}
           >
             SAVE
           </Button>
@@ -264,7 +246,7 @@ const getStyles = () =>
     dailycontainer: {
       width: "100%",
       height: "100%",
-      marginTop: 60,
+      marginTop: 0,
       flex: 1,
       marginBottom: 60,
     },
@@ -278,10 +260,11 @@ const getStyles = () =>
     },
     text: {
       fontSize: 40,
+      alignSelf: "center",
     },
     dayText: {
-      fontSize: 37,
-      margin: 20,
+      fontSize: 34,
+      margin: 15,
       color: "white",
     },
     daySmallText: {
@@ -349,4 +332,4 @@ const getStyles = () =>
     },
   });
 
-export default Greeting;
+export default DailyPlannerScreen;
