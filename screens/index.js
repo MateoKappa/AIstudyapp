@@ -15,7 +15,7 @@ import {
 } from "react-native";
 import "react-native-url-polyfill/auto";
 import { createClient } from "@supabase/supabase-js";
-export default function Index({ props }) {
+export default function Index({ navigation }) {
   const [email, setEmail] = useState("");
   const [heightBar, setHeightBar] = useState(50);
   const [password, setPassword] = useState("");
@@ -283,7 +283,10 @@ export default function Index({ props }) {
           </Text>
           <View style={styles.general}>
             <View style={styles.features}>
-              <View style={styles.feature}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("studyPlanner")}
+                style={styles.feature}
+              >
                 <Image
                   style={{
                     height: "80%",
@@ -294,7 +297,7 @@ export default function Index({ props }) {
                   source={require("../assets/studyPlanner.png")}
                 />
                 <Text style={styles.textFeature}>STUDY PLANNER</Text>
-              </View>
+              </TouchableOpacity>
               <View style={styles.feature}>
                 <Image
                   style={{
