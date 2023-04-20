@@ -239,16 +239,14 @@ const getStyles = () =>
     container: {
       flexDirection: "column",
       width: "100%",
-      marginBottom: 10,
       flex: 1,
       position: "relative",
     },
     dailycontainer: {
       width: "100%",
       height: "100%",
-      marginTop: 0,
+      marginTop: 20,
       flex: 1,
-      marginBottom: 60,
     },
     dailyPlannerContainer: {
       borderRadius: 10,

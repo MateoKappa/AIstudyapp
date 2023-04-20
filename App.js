@@ -1,35 +1,119 @@
-import Login from "./screens/Login.js";
-import { Text, View } from "react-native";
+import profile from "./screens/profile.js";
 import HomeScreen from "./screens/index.js";
 import { NavigationContainer } from "@react-navigation/native";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { Text, BottomNavigation } from "react-native-paper";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import studyPlanner from "./screens/studyPlanner.js";
+import { AntDesign } from "@expo/vector-icons";
+import AIbot from "./screens/AIbot.js";
 export default function App() {
-  const Stack = createNativeStackNavigator();
-
+  const Tab = createBottomTabNavigator();
   return (
     <NavigationContainer>
-      <Stack.Navigator
+      <Tab.Navigator
         screenOptions={{
           headerShown: false,
         }}
+        tabBar={({ navigation, state, descriptors, insets }) => (
+          <BottomNavigation.Bar
+            navigationState={state}
+            safeAreaInsets={insets}
+            onTabPress={({ route, preventDefault }) => {
+              const event = navigation.emit({
+                type: "tabPress",
+                target: route.key,
+                canPreventDefault: true,
+              });
+
+              if (event.defaultPrevented) {
+                preventDefault();
+              } else {
+                navigation.dispatch({
+                  ...navigation.navigate(route.name, route.params),
+                  target: state.key,
+                });
+              }
+            }}
+            renderIcon={({ route, focused, color }) => {
+              const { options } = descriptors[route.key];
+              if (options.tabBarIcon) {
+                return options.tabBarIcon({ focused, color, size: 24 });
+              }
+
+              return null;
+            }}
+            getLabelText={({ route }) => {
+              const { options } = descriptors[route.key];
+              const label =
+                options.tabBarLabel !== undefined
+                  ? options.tabBarLabel
+                  : options.title !== undefined
+                  ? options.title
+                  : route.title;
+
+              return label;
+            }}
+          />
+        )}
       >
-        <Stack.Screen
+        <Tab.Screen
+          name="Home"
+          component={HomeScreen}
+          options={{
+            tabBarLabel: "Home",
+            tabBarIcon: ({ color, size }) => {
+              return <Icon name="home" size={size} color={color} />;
+            },
+          }}
+        />
+        <Tab.Screen
+          name="AIbot"
+          component={AIbot}
+          options={{
+            tabBarLabel: "AIbot",
+            tabBarIcon: ({ color, size }) => {
+              return <Icon name="cog" size={size} color={color} />;
+            },
+          }}
+        />
+        <Tab.Screen
+          name="profile"
+          component={profile}
+          options={{
+            tabBarLabel: "profile",
+            tabBarIcon: ({ color, size }) => {
+              return <Icon name="cog" size={size} color={color} />;
+            },
+          }}
+        />
+        <Tab.Screen
+          name="studyPlanner"
+          component={studyPlanner}
+          options={{
+            tabBarLabel: "studyPlanner",
+            tabBarIcon: ({ color, size }) => {
+              return <Icon name="cog" size={size} color={color} />;
+            },
+          }}
+        />
+      </Tab.Navigator>
+      {/* <Tab.Screen
           name="Home"
           component={HomeScreen}
           option={{ title: "welcome" }}
         />
-        <Stack.Screen
+        <Tab.Screen
           name="Login"
           component={Login}
           option={{ title: "welcome" }}
         />
-        <Stack.Screen
+        <Tab.Screen
           name="studyPlanner"
           component={studyPlanner}
           option={{ title: "welcome" }}
-        />
-      </Stack.Navigator>
+        /> */}
+      {/* </Tab.Navigator> */}
     </NavigationContainer>
   );
 }

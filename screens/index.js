@@ -2,6 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { FontAwesome } from "@expo/vector-icons";
 import React, { useEffect, useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
 import {
   Image,
   Alert,
@@ -221,7 +222,13 @@ export default function Index({ navigation }) {
         </View>
       ) : (
         <View style={styles.homeUI}>
-          <View style={styles.profileContainer}>
+          <LinearGradient
+            // Button Linear Gradient
+            colors={["#4c669f", "#3b5998", "#192f6a"]}
+            style={styles.profileContainer}
+            locations={[0, 0.2, 1]}
+            start={{ x: 0.2, y: 0.1 }}
+          >
             {/* Welcome */}
             <Text
               style={{
@@ -270,7 +277,7 @@ export default function Index({ navigation }) {
                 </View>
               ))}
             </View>
-          </View>
+          </LinearGradient>
           <Text
             style={{
               fontSize: 25,
@@ -338,7 +345,6 @@ export default function Index({ navigation }) {
               </View>
             </View>
           </View>
-          <View style={styles.navbar}></View>
         </View>
       )}
     </View>
