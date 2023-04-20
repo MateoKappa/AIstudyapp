@@ -241,6 +241,7 @@ const getStyles = () =>
       width: "100%",
       flex: 1,
       position: "relative",
+      backgroundColor: "white",
     },
     dailycontainer: {
       width: "100%",

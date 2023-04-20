@@ -1,16 +1,93 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Dimensions,
+  Pressable,
+} from "react-native";
 import React, { useEffect, useState } from "react";
-import { createClient } from "@supabase/supabase-js";
-export default function Login({}) {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const supabaseUrl = "https://mwcxgupdugvwdbbhxwbp.supabase.co";
-  const supabaseKey =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im13Y3hndXBkdWd2d2RiYmh4d2JwIiwicm9sZSI6ImFub24iLCJpYXQiOjE2ODE0NzU4OTYsImV4cCI6MTk5NzA1MTg5Nn0.tGzHnvCtJi0yB0qQXteiBBfFL1TOfv0i1OIAw9oRKOA";
-  const supabase = createClient(supabaseUrl, supabaseKey);
+export default function Timer({}) {
+  const timerWidth = (Dimensions.get("window").width * 65) / 100;
+  const styles = getStyles(timerWidth);
+  const [counter, setCounter] = useState(60);
+  const [timerOn, setTimerOn] = useState(true);
+  const [mins, setMins] = useState(5);
+  const [hours, setHours] = useState(1);
+  console.log(timerWidth, Dimensions.get("window").width);
+  const countDown = (time) => {
+    var count = time;
+  };
+  //Timer CountDown
 
-  return <View style={styles.container}></View>;
+  useEffect(() => {
+    const timer = setTimeout(() => setCounter(counter - 1), 1000);
+    {
+      !timerOn ? clearTimeout(timer) : null;
+    }
+    if (counter == 0 && (hours > 0 || mins > 0)) {
+      clearTimeout(timer);
+      setCounter(59);
+      console.log("in");
+      if (hours > 0 && mins == 0) {
+        setHours(hours - 1);
+        setMins(59);
+      } else {
+        setMins(mins - 1);
+      }
+    }
+    if (counter == 0 && hours == 0 && mins == 0) {
+      clearTimeout(timer);
+    }
+  }, [counter, timerOn]);
+
+  return (
+    <View style={styles.container}>
+      <Pressable
+        onPress={() => setTimerOn(!timerOn)}
+        style={styles.timerContainer}
+      >
+        <View style={styles.timer}>
+          <Text style={styles.countDown}>
+            {hours < 10 ? "0" : null}
+            {hours}:{mins < 10 ? "0" : null}
+            {mins}:{counter < 10 ? "0" : null}
+            {counter}
+          </Text>
+        </View>
+      </Pressable>
+
+      <View style={styles.setNotes}></View>
+    </View>
+  );
 }
 
-const styles = StyleSheet.create({});
+const getStyles = (timerWidth) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: "white",
+      flex: 1,
+    },
+    timerContainer: {
+      flex: 3,
+      backgroundColor: "black",
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    timer: {
+      height: timerWidth,
+      width: timerWidth,
+      backgroundColor: "white",
+      borderRadius: timerWidth / 2,
+      justifyContent: "center",
+      alignItems: "center",
+    },
+    countDown: {
+      fontSize: 50,
+      fontWeight: 600,
+      color: "black",
+    },
+    setNotes: {
+      flex: 3,
+    },
+  });

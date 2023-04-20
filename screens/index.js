@@ -18,7 +18,7 @@ import "react-native-url-polyfill/auto";
 import { createClient } from "@supabase/supabase-js";
 export default function Index({ navigation }) {
   const [email, setEmail] = useState("");
-  const [heightBar, setHeightBar] = useState(50);
+  const [heightBar, setHeightBar] = useState(20);
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [signUp, setSignUp] = useState(false);

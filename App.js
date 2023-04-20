@@ -5,7 +5,6 @@ import { Text, BottomNavigation } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import studyPlanner from "./screens/studyPlanner.js";
-import { AntDesign } from "@expo/vector-icons";
 import AIbot from "./screens/AIbot.js";
 export default function App() {
   const Tab = createBottomTabNavigator();
