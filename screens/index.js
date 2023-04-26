@@ -457,6 +457,7 @@ const getStyles = (heightBar) =>
       height: "100%",
       width: "100%",
       flexDirection: "column",
+      backgroundColor: "rgba(0,0,0,0.018)",
     },
     profileContainer: {
       flex: 2,

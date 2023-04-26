@@ -21,7 +21,7 @@ export default function App() {
             theme={{
               colors: { secondaryContainer: "rgba(69, 170, 255, 0.8)" },
             }}
-            style={{ height: 85, backgroundColor: "white" }}
+            style={{ height: 85, backgroundColor: "rgba(255,255,255,1)" }}
             onTabPress={({ route, preventDefault }) => {
               const event = navigation.emit({
                 type: "tabPress",

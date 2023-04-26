@@ -27,8 +27,8 @@ const DailyPlannerScreen = () => {
   const dayColor = [
     ["MONDAY", "#00539CFF"],
     ["TUESDAY", "#EEA47FFF"],
-    ["THURSDAY", "#8AAAE5"],
-    ["WEDENSDAY", "#317773"],
+    ["WEDNESDAY", "#8AAAE5"],
+    ["THURSDAY", "#317773"],
     ["FRIDAY", "#CBD18F"],
     ["SATURDAY", "#EA738DFF"],
     ["SUNDAY", "brown"],
@@ -81,25 +81,9 @@ const DailyPlannerScreen = () => {
     setSettingContainer(false);
     AsyncStorage.setItem(
       day.toString(),
-      JSON.stringify({ time: time.toString(), min: keepTime.toString() })
+      JSON.stringify({ min: keepTime.toString(), seconds: "0" })
     );
   };
-
-  // local storage getDailyStorageData
-  useEffect(() => {
-    (async () => {
-      async function getDailyStorageData() {
-        try {
-          const value = await AsyncStorage.getItem(pickedDate);
-          let objectValue = JSON.parse(value);
-          console.log(objectValue);
-        } catch (error) {
-          console.log(error);
-        }
-      }
-      getDailyStorageData();
-    })();
-  }, []);
 
   return (
     <View style={styles.container}>
@@ -201,7 +185,6 @@ const DailyPlannerScreen = () => {
               >
                 {time[0][2]}
               </Text>
-              {console.log(time)}
               <View style={styles.time}>
                 <Text style={styles.digits}>{time[0][3]}</Text>
               </View>
@@ -222,7 +205,7 @@ const DailyPlannerScreen = () => {
             labelStyle={{ color: "black" }}
             mode="contained"
             onPress={() => {
-              setSettingContainer(false), dailyTimeSaver(pickedDate);
+              dailyTimeSaver(pickedDate);
             }}
           >
             SAVE
