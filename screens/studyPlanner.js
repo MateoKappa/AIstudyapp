@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import React from "react";
 import {
   View,
@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Pressable,
+  Animated,
 } from "react-native";
 import Slider from "react-native-slider";
 import { FontAwesome } from "@expo/vector-icons";
@@ -97,7 +98,7 @@ const DailyPlannerScreen = () => {
       </View>
       {/* Day Settings */}
       {settingContainer ? (
-        <View style={styles.settings}>
+        <Animated.View style={styles.settings}>
           <Pressable
             onPress={() => setSettingContainer(false)}
             style={{
@@ -210,9 +211,14 @@ const DailyPlannerScreen = () => {
           >
             SAVE
           </Button>
-        </View>
+        </Animated.View>
       ) : null}
-      {settingContainer ? <View style={styles.shadow}></View> : null}
+      {settingContainer ? (
+        <Pressable
+          onPress={() => setSettingContainer(false)}
+          style={styles.shadow}
+        ></Pressable>
+      ) : null}
     </View>
   );
 };
